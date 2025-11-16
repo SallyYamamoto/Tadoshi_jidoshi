@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🌸 Jidōshi & Tadōshi Lernseite 🌸</title>
+
+<style>
+/* 必要最低限 — 例文 hover / open 動作はそのまま */
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+  background: #fff6fa;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+
+.verb-card {
+  background: #fff0f5;
+  border-radius: 1.5rem;
+  border: 2px solid #f4c2d7;
+  padding-bottom: 1rem;
+}
+
+.verb-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px dashed #f4c2d7;
+}
+
+.jidoushi { font-size: 1.3rem; font-weight: 700; color: #b85c7a; text-align: left; }
+.tadoushi { font-size: 1.3rem; font-weight: 700; color: #4578c2; text-align: right; }
+.furigana { font-size: 0.8rem; color: #aa7999; }
+
+.meaning-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 1rem;
+  gap: 1rem;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.35s ease;
+}
+.meaning-wrapper.show {
+  opacity: 1;
+  max-height: 200px;
+}
+.meaning-left  { text-align: left;  border: 2px dashed #e6a6c4; padding: 0.5rem; border-radius: 1rem; }
+.meaning-right { text-align: right; border: 2px dashed #7aa0d8; padding: 0.5rem; border-radius: 1rem; }
+
+.pair-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.example-box {
+  background: #fff;
+  border: 1px solid #f4c2d7;
+  padding: 0.6rem 0.8rem;
+  border-radius: 1rem;
+  cursor: pointer;
+}
+.right-block .example-box {
+  border-color: #4578c2;
+}
+
+/* hover 表示（Deutsch OFF のときのみ） */
+body.de-hidden .example-box:hover + .translation {
+  max-height: 200px;
+  opacity: 0.6;
+}
+
+/* translation */
+.translation {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: all 0.35s ease;
+  padding: 0 0.7rem;
+  background: #ffeafb;
+  border-left: 3px solid #b85c7a;
+  border-radius: 0.5rem;
+}
+.translation.open {
+  max-height: 200px;
+  opacity: 1;
+}
+</style>
+</head>
+
+<body class="de-hidden">
+
+<h2 style="text-align:center;">🌸 Jidōshi & Tadōshi Lernseite 🌸</h2>
+<p style="text-align:center;">TSV → JSON → カード生成 版</p>
+
+<div class="controls" style="text-align:center;margin-bottom:1rem;">
+  <button id="toggleDe">Deutsch</button>
+</div>
+
+<div class="container" id="verbContainer"></div>
+
+<script>
+// -------------------------------
+// JSON を読み込む
+// -------------------------------
+async function loadData(){
+  const res = await fetch("jidou_tadou.json");
+  return await res.json();
+}
+
+let showDe = false;
+
+function updateGermanVisibility(){
+  const meanings = document.querySelectorAll(".meaning-wrapper");
+  const translations = document.querySelectorAll(".translation");
+
+  if(showDe){
+    meanings.forEach(m=>m.classList.add("show"));
+    translations.forEach(t=>t.classList.add("open"));
+  } else {
+    meanings.forEach(m=>m.classList.remove("show"));
+    translations.forEach(t=>t.classList.remove("open"));
+  }
+}
+
+// -------------------------------
+// カード生成
+// -------------------------------
+function render(data){
+  const container = document.getElementById("verbContainer");
+  container.innerHTML = "";
+
+  data.forEach(item => {
+
+    const card = document.createElement("div");
+    card.className = "verb-card";
+
+    // 活用形キーは column 名に全て含まれている
+    const K = ["mizen1","mizen2","renyou","shuushi","rentai","katei","meirei"];
+
+    card.innerHTML = `
+      <div class="verb-header">
+        <div class="jidoushi">${item.jidou_kanji}<span class="furigana">${item.jidou_kana}</span></div>
+        <div class="tadoushi">${item.tado_kanji}<span class="furigana">${item.tado_kana}</span></div>
+      </div>
+
+      <div class="meaning-wrapper">
+        <div class="meaning-left">${item.jidou_meaning}</div>
+        <div class="meaning-right">${item.tado_meaning}</div>
+      </div>
+
+      <div class="pair-content">
+
+        <div class="left-block">
+          <div class="example-box">${item["jidou_mizen1"]}</div>
+          <div class="translation">${item["de_jidou_mizen1"]}</div>
+        </div>
+
+        <div class="right-block">
+          <div class="example-box">${item["tado_mizen1"]}</div>
+          <div class="translation">${item["de_tado_mizen1"]}</div>
+        </div>
+
+      </div>
+    `;
+
+    // 例文クリック → open
+    card.querySelectorAll(".example-box").forEach(box=>{
+      box.addEventListener("click",()=>{
+        box.nextElementSibling.classList.toggle("open");
+      });
+    });
+
+    container.appendChild(card);
+  });
+
+  updateGermanVisibility();
+}
+
+// -------------------------------
+// Deutsch ボタン
+// -------------------------------
+document.getElementById("toggleDe").addEventListener("click",()=>{
+  showDe = !showDe;
+  document.body.classList.toggle("de-hidden", !showDe);
+  document.getElementById("toggleDe").classList.toggle("active", showDe);
+  updateGermanVisibility();
+});
+
+// -------------------------------
+// メイン処理開始
+// -------------------------------
+loadData().then(render);
+</script>
+
+</body>
+</html>
