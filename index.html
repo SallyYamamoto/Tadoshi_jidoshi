@@ -5,45 +5,130 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>🌸 Jidōshi & Tadōshi Lernseite 🌸</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+
 <style>
-/* 必要最低限 — 例文 hover / open 動作はそのまま */
+/* ------- Base design ------- */
 body {
-  font-family: 'Noto Sans JP', sans-serif;
-  background: #fff6fa;
+  font-family: 'Montserrat','Noto Sans JP', sans-serif;
+  background: linear-gradient(135deg, #fff0f5, #ffe6f0);
   margin: 0;
   padding: 0;
+  color: #4a2c40;
+}
+header {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: #fff5f8;
+  border-bottom: 2px solid #f4c2d7;
+}
+header h1 {
+  font-family: 'Great Vibes', cursive;
+  font-size: 3rem;
+  color: #b85c7a;
+  margin: 0.3rem 0;
 }
 
+/* ------- Controls ------- */
+.controls {
+  max-width: 1100px;
+  margin: 1.2rem auto 0 auto;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.controls div {
+  background: #fff5f8;
+  padding: 0.55rem 1rem;
+  border-radius: 2rem;
+  box-shadow: 0 2px 6px rgba(184, 92, 122, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.controls button {
+  padding: 0.35rem 0.8rem;
+  border: none;
+  border-radius: 1.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: 0.2s;
+}
+.controls button.active {
+  background: #b85c7a;
+  color: white;
+}
+#toggleDe.active {
+  background: #4578c2 !important;
+  color: white !important;
+}
+
+/* ------- Search Bar ------- */
+.search-bar { text-align: center; margin: 1.2rem 0; }
+.search-bar input {
+  width: 60%;
+  max-width: 400px;
+  padding: 0.6rem 1rem;
+  border-radius: 2rem;
+  border: 2px solid #f4c2d7;
+  background: #fff5f8;
+}
+
+/* ------- Cards ------- */
 .container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 1.5rem;
-  padding: 1.5rem;
+  gap: 2rem;
+  padding: 2rem;
 }
 
 .verb-card {
   background: #fff0f5;
-  border-radius: 1.5rem;
+  border-radius: 2rem;
   border: 2px solid #f4c2d7;
+  position: relative;
   padding-bottom: 1rem;
+  transition: 0.3s;
+}
+.verb-card:hover {
+  transform: translateY(-6px) rotateZ(0.3deg);
+  box-shadow: 0 12px 25px rgba(255, 182, 193, 0.35);
 }
 
+/* ------- Headers ------- */
 .verb-header {
   display: flex;
   justify-content: space-between;
-  padding: 1rem;
-  border-bottom: 1px dashed #f4c2d7;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px dotted #f4c2d7;
 }
 
-.jidoushi { font-size: 1.3rem; font-weight: 700; color: #b85c7a; text-align: left; }
-.tadoushi { font-size: 1.3rem; font-weight: 700; color: #4578c2; text-align: right; }
-.furigana { font-size: 0.8rem; color: #aa7999; }
+.jidoushi {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #b85c7a;
+  text-align: left;
+}
+.tadoushi {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #4578c2;
+  text-align: right;
+}
+.furigana {
+  display: block;
+  font-size: 0.85rem;
+  color: #aa7999;
+}
 
+/* ------- Meanings ------- */
 .meaning-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  padding: 1rem;
+  padding: 0.5rem 1.2rem;
   gap: 1rem;
+  margin-top: 0.6rem;
   opacity: 0;
   max-height: 0;
   overflow: hidden;
@@ -53,14 +138,29 @@ body {
   opacity: 1;
   max-height: 200px;
 }
-.meaning-left  { text-align: left;  border: 2px dashed #e6a6c4; padding: 0.5rem; border-radius: 1rem; }
-.meaning-right { text-align: right; border: 2px dashed #7aa0d8; padding: 0.5rem; border-radius: 1rem; }
 
+.meaning-left, .meaning-right {
+  background: #fff;
+  padding: 0.6rem 0.8rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.meaning-left {
+  border: 2px dashed #e6a6c4;
+  text-align: left;
+}
+.meaning-right {
+  border: 2px dashed #7aa0d8;
+  text-align: right;
+}
+
+/* ------- Examples ------- */
 .pair-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  padding: 1rem;
-  gap: 1rem;
+  padding: 1rem 1.5rem;
+  gap: 1.2rem;
 }
 
 .example-box {
@@ -69,84 +169,132 @@ body {
   padding: 0.6rem 0.8rem;
   border-radius: 1rem;
   cursor: pointer;
+  transition: 0.15s;
 }
 .right-block .example-box {
   border-color: #4578c2;
 }
 
-/* hover 表示（Deutsch OFF のときのみ） */
-body.de-hidden .example-box:hover + .translation {
-  max-height: 200px;
-  opacity: 0.6;
+/* Hover: show translation */
+.example-box:hover + .translation {
+  max-height: 200px !important;
+  opacity: 1 !important;
 }
 
-/* translation */
+/* Translation text */
 .translation {
   max-height: 0;
-  opacity: 0;
   overflow: hidden;
+  opacity: 0;
   transition: all 0.35s ease;
-  padding: 0 0.7rem;
   background: #ffeafb;
   border-left: 3px solid #b85c7a;
+  margin-top: 0.3rem;
+  padding: 0 0.7rem;
   border-radius: 0.5rem;
+  font-size: 0.9rem;
 }
 .translation.open {
   max-height: 200px;
   opacity: 1;
+}
+
+/* ------- Hide translations when DE is OFF ------- */
+body.de-hidden .meaning-wrapper {
+  max-height: 0 !important;
+  opacity: 0 !important;
+}
+body.de-hidden .translation {
+  max-height: 0 !important;
+  opacity: 0 !important;
 }
 </style>
 </head>
 
 <body class="de-hidden">
 
-<h2 style="text-align:center;">🌸 Jidōshi & Tadōshi Lernseite 🌸</h2>
-<p style="text-align:center;">TSV → JSON → カード生成 版</p>
+<header>
+  <h1>🌸 Jidōshi & Tadōshi Lernseite 🌸</h1>
+  <p>TSV → JSON → 自動カード生成版</p>
+</header>
 
-<div class="controls" style="text-align:center;margin-bottom:1rem;">
-  <button id="toggleDe">Deutsch</button>
+<div class="controls">
+  <div>
+    <span>活用形:</span>
+    <button data-k="mizen1" class="active">未然1</button>
+    <button data-k="mizen2">未然2</button>
+    <button data-k="renyou">連用</button>
+    <button data-k="shuushi">終止</button>
+    <button data-k="rentai">連体</button>
+    <button data-k="katei">仮定</button>
+    <button data-k="meirei">命令</button>
+  </div>
+
+  <div>
+    <span>表示:</span>
+    <button id="toggleDe">Deutsch</button>
+  </div>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="search" placeholder="動詞や意味で検索..." />
 </div>
 
 <div class="container" id="verbContainer"></div>
 
 <script>
-// -------------------------------
-// JSON を読み込む
-// -------------------------------
-async function loadData(){
-  const res = await fetch("jidou_tadou.json");
-  return await res.json();
-}
-
+let DATA = [];
+let currentK = "mizen1";
 let showDe = false;
 
-function updateGermanVisibility(){
-  const meanings = document.querySelectorAll(".meaning-wrapper");
+const container = document.getElementById("verbContainer");
+const searchBox = document.getElementById("search");
+const toggleDeBtn = document.getElementById("toggleDe");
+
+/* -------------------------------------------------------
+   Load JSON
+------------------------------------------------------- */
+fetch("jidou_tadou.json")
+  .then(response => response.json())
+  .then(json => {
+    DATA = json;
+    render();
+  });
+
+/* -------------------------------------------------------
+   Show / Hide German text
+------------------------------------------------------- */
+function updateGermanVisibility() {
+  const meaningBoxes = document.querySelectorAll(".meaning-wrapper");
   const translations = document.querySelectorAll(".translation");
 
-  if(showDe){
-    meanings.forEach(m=>m.classList.add("show"));
-    translations.forEach(t=>t.classList.add("open"));
+  if (showDe) {
+    meaningBoxes.forEach(m => m.classList.add("show"));
+    translations.forEach(t => t.classList.add("open"));
   } else {
-    meanings.forEach(m=>m.classList.remove("show"));
-    translations.forEach(t=>t.classList.remove("open"));
+    meaningBoxes.forEach(m => m.classList.remove("show"));
+    translations.forEach(t => t.classList.remove("open"));
   }
 }
 
-// -------------------------------
-// カード生成
-// -------------------------------
-function render(data){
-  const container = document.getElementById("verbContainer");
+/* -------------------------------------------------------
+   Main render function
+------------------------------------------------------- */
+function render() {
   container.innerHTML = "";
+  const q = searchBox.value.toLowerCase();
 
-  data.forEach(item => {
+  DATA.forEach(item => {
+    const concat = (item.jidou_kanji + item.jidou_kana + item.tado_kanji + item.tado_kana + item.jidou_meaning + item.tado_meaning).toLowerCase();
+    if (q && !concat.includes(q)) return;
+
+    const exJ = item["jidou_" + currentK];
+    const exT = item["tado_" + currentK];
+    const deJ = item["de_jidou_" + currentK];
+    const deT = item["de_tado_" + currentK];
 
     const card = document.createElement("div");
     card.className = "verb-card";
-
-    // 活用形キーは column 名に全て含まれている
-    const K = ["mizen1","mizen2","renyou","shuushi","rentai","katei","meirei"];
 
     card.innerHTML = `
       <div class="verb-header">
@@ -160,23 +308,22 @@ function render(data){
       </div>
 
       <div class="pair-content">
-
         <div class="left-block">
-          <div class="example-box">${item["jidou_mizen1"]}</div>
-          <div class="translation">${item["de_jidou_mizen1"]}</div>
+          <div class="example-box">${exJ}</div>
+          <div class="translation">${deJ}</div>
         </div>
 
         <div class="right-block">
-          <div class="example-box">${item["tado_mizen1"]}</div>
-          <div class="translation">${item["de_tado_mizen1"]}</div>
+          <div class="example-box">${exT}</div>
+          <div class="translation">${deT}</div>
         </div>
-
       </div>
     `;
 
-    // 例文クリック → open
-    card.querySelectorAll(".example-box").forEach(box=>{
-      box.addEventListener("click",()=>{
+    /* 訳：クリックで開閉 */
+    card.querySelectorAll(".example-box").forEach(box => {
+      box.addEventListener("click", e => {
+        e.stopPropagation();
         box.nextElementSibling.classList.toggle("open");
       });
     });
@@ -187,20 +334,31 @@ function render(data){
   updateGermanVisibility();
 }
 
-// -------------------------------
-// Deutsch ボタン
-// -------------------------------
-document.getElementById("toggleDe").addEventListener("click",()=>{
+/* 活用形切り替え */
+document.querySelectorAll("[data-k]").forEach(btn => {
+  btn.addEventListener("click", () => {
+    btn.parentElement.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentK = btn.dataset.k;
+    render();
+  });
+});
+
+/* Deutsch ボタン */
+toggleDeBtn.addEventListener("click", () => {
   showDe = !showDe;
-  document.body.classList.toggle("de-hidden", !showDe);
-  document.getElementById("toggleDe").classList.toggle("active", showDe);
+  if (showDe) {
+    toggleDeBtn.classList.add("active");
+    document.body.classList.remove("de-hidden");
+  } else {
+    toggleDeBtn.classList.remove("active");
+    document.body.classList.add("de-hidden");
+  }
   updateGermanVisibility();
 });
 
-// -------------------------------
-// メイン処理開始
-// -------------------------------
-loadData().then(render);
+/* Search */
+searchBox.addEventListener("input", render);
 </script>
 
 </body>
